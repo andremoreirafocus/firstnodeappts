@@ -1,13 +1,14 @@
 import { Router } from 'express';
-// import { v4 as uuid } from 'uuid';
 import { parseISO } from 'date-fns';
 import AppointmentsRepository from '../repositories/AppointmentsRepository';
 import CreateAppointmentService from '../services/CreateAppointmentService';
 import { getCustomRepository } from 'typeorm';
-// import Appointment from '../models/Appointment';
+
+import ensureAuthenticated from '../middlewares/ensureAuthenticated';
 
 const appointmentsRouter = Router();
-// const appointmentsRepository = new AppointmentsRepository();
+
+appointmentsRouter.use(ensureAuthenticated);
 
 appointmentsRouter.post('/', async (request, response) => {
   try {
@@ -30,6 +31,8 @@ appointmentsRouter.post('/', async (request, response) => {
 });
 
 appointmentsRouter.get('/', async (request, response) => {
+  console.log(request.user);
+
   const appointmentsRepository = getCustomRepository(AppointmentsRepository);
   const appointments = await appointmentsRepository.find();
 
